@@ -5,3 +5,5 @@
 # Docker Volumes
 pg_db
 product_images
+rpcs/**/*.go
+
