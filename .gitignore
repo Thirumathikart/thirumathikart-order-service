@@ -1,0 +1,7 @@
+# Secrets
+.env
+.vscode
+
+# Docker Volumes
+pg_db
+product_images
