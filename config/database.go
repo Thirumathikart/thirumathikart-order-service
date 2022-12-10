@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	schemas "github.com/thirumathikart/thirumathikart-order-service/schemas"
+	"github.com/thirumathikart/thirumathikart-order-service/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -40,8 +40,8 @@ func MigrateDB() {
 	db := GetDB()
 
 	for _, schema := range []interface{}{
-		&schemas.Order{},
-		&schemas.OrderItem{},
+		&models.Order{},
+		&models.OrderItem{},
 	} {
 		if err := db.AutoMigrate(&schema); err != nil {
 			panic(err)
