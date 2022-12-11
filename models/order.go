@@ -9,7 +9,7 @@ type Order struct {
 	CustomerID  int         `gorm:"default:0;"`
 	AddressID   int         `gorm:"default:0;"`
 	SellerID    int         `gorm:"default:0;"`
-	OrderStatus OrderStatus `gorm:"type:order_status"`
+	OrderStatus OrderStatus `sql:"type:order_status"`
 }
 
 func (Order) TableName() string {

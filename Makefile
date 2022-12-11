@@ -1,3 +1,6 @@
+build-local:
+	go build -o server
+
 build:
 	go run /app/main.go
 

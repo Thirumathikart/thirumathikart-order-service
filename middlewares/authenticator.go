@@ -17,7 +17,7 @@ func Authenticator(next echo.HandlerFunc) echo.HandlerFunc {
 		headers := c.Request().Header
 		userToken := headers.Get("Authorization")
 		if userToken == "" {
-			return Responder(c, http.StatusUnauthorized, "Unauthorized")
+			return Responder(c, http.StatusServiceUnavailable, "Unable to authorize try later")
 		}
 		var opts []grpc.DialOption
 		opts = append(

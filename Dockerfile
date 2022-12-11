@@ -19,7 +19,7 @@ RUN apk add --no-cache make
 
 RUN go install github.com/cespare/reflex@latest
 
-ENTRYPOINT ["./entry.sh"]
+ENTRYPOINT ["./scripts/entry.sh"]
 CMD ["make watch"]
 
 
@@ -28,7 +28,7 @@ FROM alpine:latest AS prod
 
 WORKDIR /
 
-COPY --from=build /app/server /app/entry.sh /app/.env  /
+COPY --from=build /app/server /app/scripts/entry.sh /app/.env  /
 
 ENTRYPOINT ["/entry.sh"]
 CMD ["./server"]

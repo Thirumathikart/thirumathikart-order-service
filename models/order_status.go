@@ -7,12 +7,12 @@ import (
 type OrderStatus string
 
 const (
-	BuyerOrdered     OrderStatus = "ordered"
-	SellerAgreed     OrderStatus = "agreed"
-	DeliveryAssigned OrderStatus = "assigned"
-	DeliveryAccepted OrderStatus = "accepted"
-	DeliveryShipped  OrderStatus = "shipped"
-	Delivered        OrderStatus = "delivered"
+	BuyerOrdered     OrderStatus = "ORDERED"
+	SellerAgreed     OrderStatus = "AGREED"
+	DeliveryAssigned OrderStatus = "ASSIGNED"
+	DeliveryAccepted OrderStatus = "ACCEPTED"
+	DeliveryShipped  OrderStatus = "SHIPPED"
+	Delivered        OrderStatus = "DELIVERED"
 )
 
 func (os *OrderStatus) Scan(value interface{}) error {
