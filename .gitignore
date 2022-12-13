@@ -3,7 +3,6 @@
 .vscode
 
 # Docker Volumes
-pg_db
+database
 product_images
-rpcs/**/*.go
-
+generated

@@ -1,8 +1,9 @@
-name: golangci-lint
+name: ci/cd
 on:
   push:
     branches:
       - main
+      - prod
   pull_request:
     branches:
       - main
@@ -11,8 +12,8 @@ permissions:
   contents: read
   
 jobs:
-  golangci:
-    name: Lint
+  CI:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v3
@@ -29,14 +30,24 @@ jobs:
             go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
       - name: update submodules
         run: |
-            export PATH=$PATH:$(pwd)/bin
-            export PATH=$PATH:/go/bin/
-            export PATH=$PATH:/usr/local/go/bin
-            git submodule init
-            git submodule update --recursive
-            make proto
+            ./scripts/update_submod.sh
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
           args: "--out-${NO_FUTURE}format colored-line-number --print-issued-lines --print-linter-name"
+  CD:
+    name: CD
+    needs: [CI]
+    if: github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: 22
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            ./scripts/deploy.sh

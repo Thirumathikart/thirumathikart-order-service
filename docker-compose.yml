@@ -8,7 +8,7 @@ services:
       context: .
       target: ${TARGET}
     ports:
-      - ${SERVER_PORT}:8000
+      - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - .:/app
 
@@ -18,5 +18,9 @@ services:
     restart: always
     env_file:
       - .env
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    command: -p ${DB_PORT}
     volumes:
-      - ./pg_db:/data/postgres
+      - ./database:/data/postgres
+      - ./scripts/create_type.sql:/docker-entrypoint-initdb.d/init.sql

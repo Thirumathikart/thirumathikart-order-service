@@ -1,8 +1,8 @@
 package models
 
 type CreateOrderItem struct {
-	ProductTitle    string `json:"product_title"`
-	ProductQuantity string `json:"product_quantity"`
+	ProductID       uint `json:"product_id"`
+	ProductQuantity uint `json:"product_quantity"`
 }
 
 type CreateOrder struct {

@@ -2,25 +2,22 @@ package main
 
 import (
 	"github.com/thirumathikart/thirumathikart-order-service/config"
-	"github.com/thirumathikart/thirumathikart-order-service/middlewares"
-	"github.com/thirumathikart/thirumathikart-order-service/routes"
+	"github.com/thirumathikart/thirumathikart-order-service/registry"
+	"github.com/thirumathikart/thirumathikart-order-service/router"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
 
-	config.InitConfig()
+	config.InitApp()
 
-	config.ConnectDB()
-	config.MigrateDB()
+	reg := registry.NewRegistry(config.GetDB())
 
 	server := echo.New()
-	middlewares.InitLogger(server)
-	server.Use(middleware.CORS())
 
-	routes.Init(server)
+	router.NewRouter(server, reg.NewAppController())
 
 	server.Logger.Fatal(server.Start(":" + config.ServerPort))
+
 }

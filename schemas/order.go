@@ -6,17 +6,12 @@ import (
 
 type Order struct {
 	gorm.Model
-	CustomerID int    `gorm:"default:0;"`
-	AddressID  int    `gorm:"default:0;"`
-	Amount     int    `gorm:"default:0;"`
-	Status     string `gorm:"default:null;"`
-	Stock      int    `gorm:"default:0;"`
+	CustomerID  uint        `gorm:"default:0;"`
+	AddressID   uint        `gorm:"default:0;"`
+	SellerID    uint        `gorm:"default:0;"`
+	OrderStatus OrderStatus `sql:"type:order_status"`
 }
 
-type OrderItem struct {
-	gorm.Model
-	OrderID   uint
-	Order     Order
-	ProductID int `gorm:"default:0;"`
-	Quantity  int `gorm:"default:0;"`
+func (Order) TableName() string {
+	return "order"
 }

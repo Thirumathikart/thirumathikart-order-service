@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	schemas "github.com/thirumathikart/thirumathikart-order-service/schemas"
+	"github.com/thirumathikart/thirumathikart-order-service/schemas"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
