@@ -9,5 +9,5 @@ import (
 func NotificationRPC(
 	notificationContent *notification.SingleNotificationRequest,
 	client notification.NotificationServiceClient) (*notification.SingleNotificationResponse, error) {
-	return client.SendSingleNotificationRPC(context.Background(), notificationContent)
+	return client.SingleNotificationRPC(context.Background(), notificationContent)
 }

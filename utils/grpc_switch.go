@@ -17,10 +17,14 @@ func GRPCSwitch(conn *grpc.ClientConn, rpcType string, request interface{}) (int
 		req := request.([]models.CreateOrderItem)
 		prodClient := products.NewProductServiceClient(conn)
 		response, err = rpcs.ProductRPC(req, prodClient)
-	case "user":
+	case "auth":
 		req := request.(string)
 		userClient := user.NewUserServiceClient(conn)
 		response, err = rpcs.AuthRPC(req, userClient)
+	case "user":
+		req := request.(string)
+		userClient := user.NewUserServiceClient(conn)
+		response, err = rpcs.UserRPC(req, userClient)
 	default:
 		req := request.(*notification.SingleNotificationRequest)
 		notifyClient := notification.NewNotificationServiceClient(conn)

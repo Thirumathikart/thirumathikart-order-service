@@ -19,4 +19,5 @@ func main() {
 	router.NewRouter(server, reg.NewAppController())
 
 	server.Logger.Fatal(server.Start(":" + config.ServerPort))
+
 }

@@ -1,4 +1,4 @@
-package models
+package schemas
 
 import (
 	"gorm.io/gorm"
@@ -6,9 +6,9 @@ import (
 
 type Order struct {
 	gorm.Model
-	CustomerID  int         `gorm:"default:0;"`
-	AddressID   int         `gorm:"default:0;"`
-	SellerID    int         `gorm:"default:0;"`
+	CustomerID  uint        `gorm:"default:0;"`
+	AddressID   uint        `gorm:"default:0;"`
+	SellerID    uint        `gorm:"default:0;"`
 	OrderStatus OrderStatus `sql:"type:order_status"`
 }
 

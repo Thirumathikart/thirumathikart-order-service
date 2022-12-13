@@ -30,13 +30,7 @@ jobs:
             go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
       - name: update submodules
         run: |
-            export PATH=$PATH:$(pwd)/bin
-            export PATH=$PATH:/go/bin/
-            export PATH=$PATH:/usr/local/go/bin
-            git submodule init
-            git submodule update --recursive
-            mkdir generated
-            make proto
+            ./scripts/update_submod.sh
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:

@@ -2,51 +2,79 @@ package services
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/labstack/echo/v4"
 	"github.com/thirumathikart/thirumathikart-order-service/config"
+	"github.com/thirumathikart/thirumathikart-order-service/generated/notification"
 	"github.com/thirumathikart/thirumathikart-order-service/generated/products"
 	"github.com/thirumathikart/thirumathikart-order-service/generated/user"
+	"github.com/thirumathikart/thirumathikart-order-service/helpers"
+	"github.com/thirumathikart/thirumathikart-order-service/middlewares"
 	"github.com/thirumathikart/thirumathikart-order-service/models"
-	"github.com/thirumathikart/thirumathikart-order-service/utils"
+	"github.com/thirumathikart/thirumathikart-order-service/repositories"
 )
 
-type orderService struct{}
+type orderService struct {
+	repo repositories.OrderRepository
+}
 
 type OrderService interface {
-	AddOrder(user *user.User,
-		productInfo *products.GetProductsResponse,
-		req *models.CreateOrder)
+	AddOrder(
+		c echo.Context,
+		userDetails *user.User,
+		req *models.CreateOrder) error
 }
 
-func NewOrderService() OrderService {
-	return &orderService{}
+func NewOrderService(repo repositories.OrderRepository) OrderService {
+	return &orderService{repo: repo}
 }
 
-func (os *orderService) AddOrder(user *user.User,
-	productInfo *products.GetProductsResponse,
-	req *models.CreateOrder) {
+func (os *orderService) AddOrder(
+	c echo.Context,
+	userDetails *user.User,
+	request *models.CreateOrder) error {
 
-	quantityFromID := utils.QuantityFromID(req.OrderItems)
-	db := config.GetDB()
+	notificationChannel := make(chan struct{})
 
-	order := models.Order{
-		CustomerID:  int(user.UserId),
-		AddressID:   int(*user.AddressId),
-		OrderStatus: models.BuyerOrdered,
-	}
-
-	res := db.Create(&order)
-
-	fmt.Println(res)
-	orderItems := []models.OrderItem{}
-	for _, product := range productInfo.GetProducts() {
-		orderItem := models.OrderItem{
-			OrderID:  int(order.ID),
-			Name:     product.ProductTitle,
-			Price:    int(product.ProductPrice),
-			Quantity: quantityFromID[int(product.ProductId)],
+	go func(channel chan struct{}) {
+		userRes, err := helpers.GRPCDialler(config.ProductService, "user", request.SellerContact)
+		if err != nil {
+			log.Panicln(err)
+			return
 		}
-		orderItems = append(orderItems, orderItem)
+		userResponse := userRes.(*user.UserResponse)
+		fcmToken := *userResponse.User.FcmToken
+		if fcmToken == "" {
+			log.Panicln("Error Occurred")
+			return
+		}
+		notifyRes, err := helpers.GRPCDialler(config.ProductService, "messaging", fcmToken)
+		if err != nil {
+			log.Panicln(err)
+			return
+		}
+		notifyResponse := notifyRes.(*notification.SingleNotificationResponse)
+		if !notifyResponse.IsSuccess {
+			msg := fmt.Sprintf("Unable to send notification to fcmToken: %s", fcmToken)
+			log.Panicln(msg)
+		}
+		channel <- struct{}{}
+	}(notificationChannel)
+
+	res, err := helpers.GRPCDialler(config.ProductService, "product", request.OrderItems)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Error Occurred")
 	}
-	db.Create(&orderItems)
+
+	response := res.(*products.GetProductsResponse)
+	err = os.repo.CreateOrder(userDetails, response, request.OrderItems)
+
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Error Occurred")
+	}
+
+	<-notificationChannel
+	return middlewares.Responder(c, http.StatusOK, "Order Placed Successfully")
 }

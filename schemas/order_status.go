@@ -1,4 +1,4 @@
-package models
+package schemas
 
 import (
 	"database/sql/driver"
