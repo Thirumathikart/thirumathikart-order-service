@@ -14,5 +14,5 @@ func NewRouter(e *echo.Echo, c controllers.OrderController) {
 	e.Use(middlewares.Authenticator)
 
 	// Router Routes
-	e.POST("/create_order", c.CreateOrder)
+	e.POST("/create_order", c.PlaceOrder)
 }

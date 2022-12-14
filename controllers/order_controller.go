@@ -4,11 +4,10 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/mitchellh/mapstructure"
-	"github.com/thirumathikart/thirumathikart-order-service/generated/user"
 	"github.com/thirumathikart/thirumathikart-order-service/middlewares"
 	"github.com/thirumathikart/thirumathikart-order-service/models"
 	"github.com/thirumathikart/thirumathikart-order-service/services"
+	"github.com/thirumathikart/thirumathikart-order-service/utils"
 )
 
 type orderController struct {
@@ -16,19 +15,16 @@ type orderController struct {
 }
 
 type OrderController interface {
-	CreateOrder(c echo.Context) error
+	PlaceOrder(c echo.Context) error
 }
 
 func NewOrderController(os services.OrderService) OrderController {
 	return &orderController{os}
 }
 
-func (os *orderController) CreateOrder(c echo.Context) error {
+func (os *orderController) PlaceOrder(c echo.Context) error {
 
-	credentials := c.Get("user").(map[string]interface{})
-
-	var userDetails user.User
-	err := mapstructure.Decode(&credentials, &userDetails)
+	userDetails, err := utils.GetUserDetails(c)
 	if err != nil {
 		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
 	}
@@ -37,5 +33,33 @@ func (os *orderController) CreateOrder(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return err
 	}
-	return os.service.AddOrder(c, &userDetails, request)
+	return os.service.AddOrder(c, userDetails, request)
+}
+
+func (os *orderController) AcceptOrder(c echo.Context) error {
+
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+
+	request := new(models.UpdateOrder)
+	if err := c.Bind(request); err != nil {
+		return err
+	}
+	return os.service.AcceptOrder(c, userDetails, request)
+}
+
+func (os *orderController) AssignOrder(c echo.Context) error {
+
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+
+	request := new(models.UpdateOrder)
+	if err := c.Bind(request); err != nil {
+		return err
+	}
+	return os.service.AcceptOrder(c, userDetails, request)
 }

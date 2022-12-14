@@ -6,8 +6,8 @@ import (
 
 type OrderItem struct {
 	gorm.Model
-	OrderID     uint
 	Order       Order
+	OrderID     uint
 	Name        string
 	CategoryID  uint
 	Description string
