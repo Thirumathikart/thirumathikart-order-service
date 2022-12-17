@@ -6,9 +6,17 @@ import (
 
 type Delivery struct {
 	gorm.Model
-	Order      Order
-	OrderID    uint
-	DeliveryID uint
+	Order             Order
+	OrderID           uint
+	DeliveryPartner   DeliveryPartner
+	DeliveryPartnerID uint
+}
+
+type DeliveryPartner struct {
+	gorm.Model
+	DeliveryPartnerID uint
+	Location          Location
+	Status            bool
 }
 
 type Location struct {
