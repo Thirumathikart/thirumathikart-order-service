@@ -14,10 +14,10 @@ func AuthRPC(userToken string, client user.UserServiceClient) (*user.AuthRespons
 		})
 }
 
-func UserRPC(userContact string, client user.UserServiceClient) (*user.UserResponse, error) {
+func UserRPC(userID uint, client user.UserServiceClient) (*user.UserResponse, error) {
 
 	return client.UserRPC(context.Background(),
 		&user.UserRequest{
-			Contact: userContact,
+			UserID: uint32(userID),
 		})
 }

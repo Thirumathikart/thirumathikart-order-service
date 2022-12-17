@@ -28,6 +28,17 @@ type OrderRepository interface {
 	FindCustomer(
 		orderID uint,
 	) (uint, error)
+
+	GetDeliveryPartners() ([]schemas.DeliveryPartner, error)
+
+	GetOrder(
+		orderID uint,
+	) (schemas.Order, error)
+
+	AssignDeliveryPartner(
+		orderID uint,
+		DeliveryPartnerID uint,
+	) error
 }
 
 func NewOrderRepository(db *gorm.DB) OrderRepository {
@@ -42,7 +53,7 @@ func (or *orderRepository) CreateOrder(
 
 	order := schemas.Order{
 		CustomerID:        uint(user.UserId),
-		CustomerAddressID: uint(*user.AddressId),
+		CustomerAddressID: uint(user.Address.AddressId),
 		OrderStatus:       schemas.BuyerOrdered,
 	}
 
@@ -90,4 +101,33 @@ func (or *orderRepository) FindCustomer(
 		return 0, query.Error
 	}
 	return order.CustomerID, nil
+}
+
+func (or *orderRepository) GetDeliveryPartners() ([]schemas.DeliveryPartner, error) {
+	var deliveryPartners []schemas.DeliveryPartner
+	query := or.db.Find(&deliveryPartners)
+	return deliveryPartners, query.Error
+}
+
+func (or *orderRepository) GetOrder(
+	orderID uint,
+) (schemas.Order, error) {
+	var order schemas.Order
+	res := or.db.Where("id = ?", orderID).Find(&order)
+	return order, res.Error
+}
+
+func (or *orderRepository) AssignDeliveryPartner(
+	orderID uint,
+	DeliveryPartnerID uint,
+) error {
+	order := schemas.Order{
+		DeliveryPartnerID: DeliveryPartnerID,
+		OrderStatus:       schemas.DeliveryPartnerAssigned,
+	}
+	if err :=
+		or.db.Model(&schemas.Order{}).Where("id = ?", orderID).Updates(order).Error; err != nil {
+		return err
+	}
+	return nil
 }

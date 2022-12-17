@@ -10,7 +10,7 @@ type Order struct {
 	CustomerAddressID uint        `gorm:"default:0;"`
 	SellerID          uint        `gorm:"default:0;"`
 	SellerAddressID   uint        `gorm:"default:0;"`
-	DeliveryID        uint        `gorm:"default:0;"`
+	DeliveryPartnerID uint        `gorm:"default:0;"`
 	OrderStatus       OrderStatus `sql:"type:order_status"`
 }
 

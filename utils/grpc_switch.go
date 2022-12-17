@@ -22,7 +22,7 @@ func GRPCSwitch(conn *grpc.ClientConn, rpcType string, request interface{}) (int
 		userClient := user.NewUserServiceClient(conn)
 		response, err = rpcs.AuthRPC(req, userClient)
 	case "user":
-		req := request.(string)
+		req := request.(uint)
 		userClient := user.NewUserServiceClient(conn)
 		response, err = rpcs.UserRPC(req, userClient)
 	default:

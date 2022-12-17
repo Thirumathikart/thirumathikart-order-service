@@ -61,5 +61,19 @@ func (os *orderController) AssignOrder(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return err
 	}
-	return os.service.AcceptOrder(c, userDetails, request)
+	return os.service.AssignOrder(c, userDetails, request)
+}
+
+func (os *orderController) ShipOrder(c echo.Context) error {
+
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+
+	request := new(models.UpdateOrder)
+	if err := c.Bind(request); err != nil {
+		return err
+	}
+	return os.service.ShipOrder(c, userDetails, request)
 }

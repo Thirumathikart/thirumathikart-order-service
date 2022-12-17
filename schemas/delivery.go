@@ -15,12 +15,7 @@ type Delivery struct {
 type DeliveryPartner struct {
 	gorm.Model
 	DeliveryPartnerID uint
-	Location          Location
+	Latitude          float64 `gorm:"type:decimal(10,8)"`
+	Longitude         float64 `gorm:"type:decimal(11,8)"`
 	Status            bool
-}
-
-type Location struct {
-	gorm.Model
-	Lat float64 `gorm:"type:decimal(10,8)"`
-	Lng float64 `gorm:"type:decimal(11,8)"`
 }
