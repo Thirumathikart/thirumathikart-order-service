@@ -31,6 +31,9 @@ type OrderService interface {
 		c echo.Context,
 		userDetails *user.User,
 		request *models.UpdateOrder) error
+	DeliveryPartnerStatusService(
+		c echo.Context,
+		request *models.DeliveryPartnerStatus) error
 }
 
 func NewOrderService(repo repositories.OrderRepository) OrderService {

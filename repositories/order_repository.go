@@ -39,6 +39,13 @@ type OrderRepository interface {
 		orderID uint,
 		DeliveryPartnerID uint,
 	) error
+
+	UpdateDelvieryPartnerStatus(
+		deliveryPartnerID uint,
+		deliveryPartnerStatus bool,
+		Lat float64,
+		Lng float64,
+	) error
 }
 
 func NewOrderRepository(db *gorm.DB) OrderRepository {
@@ -127,6 +134,17 @@ func (or *orderRepository) AssignDeliveryPartner(
 	}
 	if err :=
 		or.db.Model(&schemas.Order{}).Where("id = ?", orderID).Updates(order).Error; err != nil {
+		return err
+	}
+	return nil
+}
+func (or *orderRepository) UpdateDelvieryPartnerStatus(
+	deliveryPartnerID uint,
+	deliveryPartnerStatus bool,
+	Lat float64,
+	Lng float64) error {
+	if err :=
+		or.db.Model(&schemas.DeliveryPartner{}).Where("delivery_partner_id = ?", deliveryPartnerID).Updates(map[string]interface{}{"status": deliveryPartnerStatus, "Lat": Lat, "Lng": Lng}).Error; err != nil {
 		return err
 	}
 	return nil

@@ -16,6 +16,7 @@ type orderController struct {
 
 type OrderController interface {
 	PlaceOrder(c echo.Context) error
+	UpdateDeliveryPartnerStatus(c echo.Context) error
 }
 
 func NewOrderController(os services.OrderService) OrderController {
@@ -76,4 +77,13 @@ func (os *orderController) ShipOrder(c echo.Context) error {
 		return err
 	}
 	return os.service.ShipOrder(c, userDetails, request)
+}
+
+func (os *orderController) UpdateDeliveryPartnerStatus(c echo.Context) error {
+
+	request := new(models.DeliveryPartnerStatus)
+	if err := c.Bind(request); err != nil {
+		return err
+	}
+	return os.service.DeliveryPartnerStatusService(c, request)
 }

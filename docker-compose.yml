@@ -22,7 +22,7 @@ services:
       - ${DB_PORT}:${DB_PORT}
     command: -p ${DB_PORT}
     volumes:
-      - ./database:/data/postgres
+      - ./database:/data/postgres:z
       - ./scripts/create_type.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
