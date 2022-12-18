@@ -24,3 +24,9 @@ services:
     volumes:
       - ./database:/data/postgres
       - ./scripts/create_type.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  default:
+      external:
+        name: thirumathikart_network
+        
