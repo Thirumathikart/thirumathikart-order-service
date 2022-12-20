@@ -17,6 +17,12 @@ type orderController struct {
 type OrderController interface {
 	PlaceOrder(c echo.Context) error
 	UpdateDeliveryPartnerStatus(c echo.Context) error
+	AcceptOrder(c echo.Context) error
+	AssignOrder(c echo.Context) error
+	ShipOrder(c echo.Context) error
+	FetchOrderBySeller(c echo.Context) error
+	FetchOrderByDeliveryPartner(c echo.Context) error
+	FetchOrderByCustomer(c echo.Context) error
 }
 
 func NewOrderController(os services.OrderService) OrderController {
@@ -86,4 +92,28 @@ func (os *orderController) UpdateDeliveryPartnerStatus(c echo.Context) error {
 		return err
 	}
 	return os.service.DeliveryPartnerStatusService(c, request)
+}
+
+func (os *orderController) FetchOrderBySeller(c echo.Context) error {
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+	return os.service.FetchOrderBySeller(c,userDetails)
+}
+
+func (os *orderController) FetchOrderByDeliveryPartner(c echo.Context) error {
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+	return os.service.FetchOrderByDeliveryPartner(c,userDetails)
+}
+
+func (os *orderController) FetchOrderByCustomer(c echo.Context) error {
+	userDetails, err := utils.GetUserDetails(c)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
+	}
+	return os.service.FetchOrderByCustomer(c,userDetails)
 }

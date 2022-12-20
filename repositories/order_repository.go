@@ -46,6 +46,22 @@ type OrderRepository interface {
 		Lat float64,
 		Lng float64,
 	) error
+	FetchOrderByDeliveryPartner(
+		SellerID uint,
+	) ([]schemas.Order, error)
+
+	FetchOrderByCustomer(
+		SellerID uint,
+	) ([]schemas.Order, error)
+
+	FetchOrderBySeller(
+		SellerID uint,
+	) ([]schemas.Order, error)
+	
+	FetchOrderItemsByOrder(
+		OrderID uint,
+	) ([]schemas.OrderItem, error)
+
 }
 
 func NewOrderRepository(db *gorm.DB) OrderRepository {
@@ -149,3 +165,37 @@ func (or *orderRepository) UpdateDelvieryPartnerStatus(
 	}
 	return nil
 }
+
+func (or *orderRepository) FetchOrderItemsByOrder(
+	OrderID uint,
+) ([]schemas.OrderItem, error) {
+	var orders []schemas.OrderItem
+	err:=or.db.Find(&orders).Where("order_id = ?",OrderID).Preload("Order").Error	
+	return orders,err
+}
+
+
+func (or *orderRepository) FetchOrderBySeller(
+	SellerID uint,
+) ([]schemas.Order, error) {
+	var orders []schemas.Order
+	err:=or.db.Find(&orders).Where("seller_id = ?",SellerID).Error	
+	return orders,err
+}
+
+func (or *orderRepository) FetchOrderByDeliveryPartner(
+	DeliveryPartnerID uint,
+) ([]schemas.Order, error) {
+	var orders []schemas.Order
+	err:=or.db.Find(&orders).Where("delivery_partner_id = ?",DeliveryPartnerID).Error	
+	return orders,err
+}
+
+func (or *orderRepository) FetchOrderByCustomer(
+	CustomerID uint,
+) ([]schemas.Order, error) {
+	var orders []schemas.Order
+	err:=or.db.Find(&orders).Where("customer_id = ?",CustomerID).Error	
+	return orders,err
+}
+

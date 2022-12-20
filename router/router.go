@@ -16,4 +16,10 @@ func NewRouter(e *echo.Echo, c controllers.OrderController) {
 	// Router Routes
 	e.POST("/create_order", c.PlaceOrder)
 	e.POST("/update-deliver-partner-status", c.UpdateDeliveryPartnerStatus)
+	e.POST("/accept_order",c.AcceptOrder)
+	e.POST("/assign_order",c.AssignOrder)
+	e.POST("/ship_order",c.ShipOrder)
+	e.GET("/fetch_by_seller",c.FetchOrderBySeller)
+	e.GET("/fetch_by_customer",c.FetchOrderByCustomer)
+	e.GET("/fetch_by_delivery",c.FetchOrderByDeliveryPartner)
 }

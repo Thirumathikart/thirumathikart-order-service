@@ -34,6 +34,19 @@ type OrderService interface {
 	DeliveryPartnerStatusService(
 		c echo.Context,
 		request *models.DeliveryPartnerStatus) error
+
+	FetchOrderBySeller(
+		c echo.Context,
+		userDetails *user.User) error
+
+	FetchOrderByCustomer(
+		c echo.Context,
+		userDetails *user.User) error
+
+	FetchOrderByDeliveryPartner(
+		c echo.Context,
+		userDetails *user.User) error
+		
 }
 
 func NewOrderService(repo repositories.OrderRepository) OrderService {
