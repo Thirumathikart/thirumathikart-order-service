@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,7 +25,7 @@ func Authenticator(next echo.HandlerFunc) echo.HandlerFunc {
 			opts,
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			WithClientUnaryInterceptor())
-		conn, err := grpc.Dial(config.ProductService, opts...)
+		conn, err := grpc.Dial(config.AuthService, opts...)
 		if err != nil {
 			fmt.Println("error in dial", err)
 		}
@@ -38,6 +39,7 @@ func Authenticator(next echo.HandlerFunc) echo.HandlerFunc {
 			return Responder(c, http.StatusUnauthorized, "Unauthorized")
 		}
 		c.Set("user", response.User)
+		log.Println("000000000000000000:",response.User)
 		return next(c)
 	}
 }

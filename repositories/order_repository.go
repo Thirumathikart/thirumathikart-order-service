@@ -1,10 +1,13 @@
 package repositories
 
 import (
+	"log"
+
 	"github.com/thirumathikart/thirumathikart-order-service/generated/products"
 	"github.com/thirumathikart/thirumathikart-order-service/generated/user"
 	"github.com/thirumathikart/thirumathikart-order-service/models"
 	"github.com/thirumathikart/thirumathikart-order-service/schemas"
+
 	"github.com/thirumathikart/thirumathikart-order-service/utils"
 	"gorm.io/gorm"
 )
@@ -18,6 +21,7 @@ type OrderRepository interface {
 		user *user.User,
 		productInfo *products.GetProductsResponse,
 		requestedItems []models.CreateOrderItem,
+		AddressId uint,
 	) error
 
 	UpdateOrderStatus(
@@ -72,13 +76,16 @@ func (or *orderRepository) CreateOrder(
 	user *user.User,
 	productInfo *products.GetProductsResponse,
 	requestedItems []models.CreateOrderItem,
+	AddressId uint,
 ) error {
 
+	log.Println(".............-.",user)
 	order := schemas.Order{
 		CustomerID:        uint(user.UserId),
-		CustomerAddressID: uint(user.Address.AddressId),
+		CustomerAddressID: AddressId,
 		OrderStatus:       schemas.BuyerOrdered,
 	}
+	log.Println(".............-.",order)
 
 	if err := or.db.Create(&order).Error; err != nil {
 		return err
@@ -86,16 +93,19 @@ func (or *orderRepository) CreateOrder(
 	quantityFromID := utils.QuantityFromID(requestedItems)
 
 	orderItems := []schemas.OrderItem{}
+	log.Println(".............-.",productInfo.Products)
 
-	for _, product := range productInfo.GetProducts() {
+	for _, product := range productInfo.Products {
+		log.Println("..............+",product)
 		orderItem := schemas.OrderItem{
-			OrderID:  order.ID,
+			OrderID:  1,
 			Name:     product.ProductTitle,
 			Price:    uint(product.ProductPrice),
 			Quantity: quantityFromID[uint(product.ProductId)],
 		}
 		orderItems = append(orderItems, orderItem)
 	}
+	log.Println("...............",orderItems)
 
 	if err := or.db.Create(&orderItems).Error; err != nil {
 		return err

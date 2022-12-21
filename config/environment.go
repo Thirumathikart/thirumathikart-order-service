@@ -17,6 +17,7 @@ var DbPort string
 var ServerPort string
 var ProductService string
 var AuthService string
+var MessagingService string
 
 func LoadEnvironment() {
 	err := godotenv.Load()
@@ -32,4 +33,5 @@ func LoadEnvironment() {
 	ServerPort = os.Getenv("SERVER_PORT")
 	ProductService = os.Getenv("PRODUCT_SERVICE")
 	AuthService = os.Getenv("AUTH_SERVICE")
+	MessagingService =os.Getenv("MESSAGING_SERVICE")
 }

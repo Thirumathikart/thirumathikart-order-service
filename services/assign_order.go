@@ -70,7 +70,7 @@ func (os *orderService) AssignOrder(c echo.Context,
 	if fcmToken == "" {
 		log.Panicln("Error Occurred")
 	}
-	notifyRes, err := helpers.GRPCDialler(config.ProductService, "messaging", fcmToken)
+	notifyRes, err := helpers.GRPCDialler(config.MessagingService, "messaging", fcmToken)
 	if err != nil {
 		log.Panicln(err)
 	}

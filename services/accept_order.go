@@ -40,7 +40,7 @@ func (os *orderService) AcceptOrder(c echo.Context,
 			notiChan <- struct{}{}
 			return
 		}
-		notifyRes, err := helpers.GRPCDialler(config.ProductService, "messaging", fcmToken)
+		notifyRes, err := helpers.GRPCDialler(config.MessagingService, "messaging", fcmToken)
 		if err != nil {
 			log.Panicln(err)
 			notiChan <- struct{}{}
