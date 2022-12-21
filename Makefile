@@ -11,4 +11,4 @@ watch:
 	reflex -s -r '\.go$$' make run
 
 proto:
-	protoc -I ./protos/ ./protos/**/*.proto --go_out=./generated --go-grpc_out=./generated
+	protoc -I ./protos/ ./protos/**/*.proto --go_out=./generated --go-grpc_out=./generated --experimental_allow_proto3_optional
