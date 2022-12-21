@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -59,15 +60,16 @@ func (os *orderService) FetchOrderByDeliveryPartner (c echo.Context,
 
 func (os *orderService) FetchOrderByCustomer (c echo.Context,
 	userDetails *user.User) error {
-	
-	orders, err :=os.repo.FetchOrderByCustomer(uint(userDetails.UserId))
-
+	log.Print(userDetails)
+	orders, err :=os.repo.FetchOrderByCustomer(3)
+	log.Print(orders)
 	if err != nil {
 		return middlewares.Responder(c, http.StatusNoContent, "Unable to Fetch Order")
 	}
 	var response []models.FetchOrder
 
 	for _, order := range orders{
+		log.Print(order)
 		items, err := os.repo.FetchOrderItemsByOrder(order.ID)
 		if err != nil {
 			return middlewares.Responder(c, http.StatusNoContent, "Unable to Fetch Order")

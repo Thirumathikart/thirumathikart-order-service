@@ -205,7 +205,9 @@ func (or *orderRepository) FetchOrderByCustomer(
 	CustomerID uint,
 ) ([]schemas.Order, error) {
 	var orders []schemas.Order
-	err:=or.db.Find(&orders).Where("customer_id = ?",CustomerID).Error	
+	log.Println(CustomerID)
+	err:=or.db.Where("customer_id = ?",CustomerID).Find(&orders).Error	
+	log.Println(err)
 	return orders,err
 }
 
