@@ -11,3 +11,8 @@ type FetchOrder struct {
 	CustomerAddress *user.Address       `json:"customer_address"`
 	SellerAddress   *user.Address       `json:"seller_address"`
 }
+
+type UserAddressRequest struct {
+	UserID    uint32 `json:"user_id"`
+	AddressID uint32 `json:"address_id"`
+}

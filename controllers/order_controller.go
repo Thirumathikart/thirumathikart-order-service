@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/thirumathikart/thirumathikart-order-service/config"
+	"github.com/thirumathikart/thirumathikart-order-service/helpers"
 	"github.com/thirumathikart/thirumathikart-order-service/middlewares"
 	"github.com/thirumathikart/thirumathikart-order-service/models"
 	"github.com/thirumathikart/thirumathikart-order-service/services"
@@ -99,7 +101,7 @@ func (os *orderController) FetchOrderBySeller(c echo.Context) error {
 	if err != nil {
 		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
 	}
-	return os.service.FetchOrderBySeller(c,userDetails)
+	return os.service.FetchOrderBySeller(c, userDetails)
 }
 
 func (os *orderController) FetchOrderByDeliveryPartner(c echo.Context) error {
@@ -107,7 +109,16 @@ func (os *orderController) FetchOrderByDeliveryPartner(c echo.Context) error {
 	if err != nil {
 		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
 	}
-	return os.service.FetchOrderByDeliveryPartner(c,userDetails)
+	// return os.service.FetchOrderByDeliveryPartner(c,userDetails)
+	userAddressRequest := &models.UserAddressRequest{
+		UserID:    userDetails.UserId,
+		AddressID: 2,
+	}
+	customerRes, err := helpers.GRPCDialler(config.AuthService, "user", userAddressRequest)
+	if err != nil {
+		return middlewares.Responder(c, http.StatusNoContent, err.Error())
+	}
+	return middlewares.Responder(c, http.StatusOK, customerRes)
 }
 
 func (os *orderController) FetchOrderByCustomer(c echo.Context) error {
@@ -115,5 +126,5 @@ func (os *orderController) FetchOrderByCustomer(c echo.Context) error {
 	if err != nil {
 		return middlewares.Responder(c, http.StatusBadRequest, "Bad Request")
 	}
-	return os.service.FetchOrderByCustomer(c,userDetails)
+	return os.service.FetchOrderByCustomer(c, userDetails)
 }

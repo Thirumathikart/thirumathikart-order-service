@@ -3,7 +3,6 @@ package helpers
 import (
 	"fmt"
 
-	"github.com/thirumathikart/thirumathikart-order-service/config"
 	"github.com/thirumathikart/thirumathikart-order-service/middlewares"
 	"github.com/thirumathikart/thirumathikart-order-service/utils"
 	"google.golang.org/grpc"
@@ -16,7 +15,7 @@ func GRPCDialler(url string, rpcType string, request interface{}) (interface{}, 
 		opts,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		middlewares.WithClientUnaryInterceptor())
-	conn, er := grpc.Dial(config.ProductService, opts...)
+	conn, er := grpc.Dial(url, opts...)
 	if er != nil {
 		fmt.Println("error in dial", er)
 	}

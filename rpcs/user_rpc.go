@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/thirumathikart/thirumathikart-order-service/generated/user"
+	"github.com/thirumathikart/thirumathikart-order-service/models"
 )
 
 func AuthRPC(userToken string, client user.UserServiceClient) (*user.AuthResponse, error) {
@@ -14,10 +15,11 @@ func AuthRPC(userToken string, client user.UserServiceClient) (*user.AuthRespons
 		})
 }
 
-func UserRPC(userID uint, client user.UserServiceClient) (*user.UserResponse, error) {
+func UserRPC(userAddressRequest *models.UserAddressRequest, client user.UserServiceClient) (*user.UserResponse, error) {
 
 	return client.UserRPC(context.Background(),
 		&user.UserRequest{
-			UserID: uint32(userID),
+			UserID:    uint32(userAddressRequest.UserID),
+			AddressID: uint32(userAddressRequest.AddressID),
 		})
 }
