@@ -61,7 +61,7 @@ func (os *orderService) FetchOrderByDeliveryPartner (c echo.Context,
 func (os *orderService) FetchOrderByCustomer (c echo.Context,
 	userDetails *user.User) error {
 	log.Print(userDetails)
-	orders, err :=os.repo.FetchOrderByCustomer(3)
+	orders, err :=os.repo.FetchOrderByCustomer(uint(userDetails.UserId))
 	log.Print(orders)
 	if err != nil {
 		return middlewares.Responder(c, http.StatusNoContent, "Unable to Fetch Order")
