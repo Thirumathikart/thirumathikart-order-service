@@ -84,6 +84,7 @@ func (or *orderRepository) CreateOrder(
 		CustomerID:        uint(user.UserId),
 		CustomerAddressID: AddressId,
 		OrderStatus:       schemas.BuyerOrdered,
+		SellerID: uint(productInfo.Products[0].SellerId),
 	}
 	log.Println(".............-.",order)
 
